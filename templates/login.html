@@ -26,10 +26,10 @@
 		<div>
 			<div class="login" id="here">
 				{% csrf_token %}
-				<h3>Email:</h3>
+				<h2>Email:</h2>
 				<input type="text" placeholder="Email" name="email" required value={{detail.email}} >
 				<br><br>
-				<h3>Password: </h3>
+				<h2>Password: </h2>
 				<input type="password" placeholder="Password" name="password" required value={{detail.password}} >
 				<br><br><a href="home.html">
 				<input href="home.html" role="button" type="submit" value="LOGIN"></a>

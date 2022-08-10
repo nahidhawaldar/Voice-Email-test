@@ -28,8 +28,8 @@ def talk(text):
     engine.runAndWait()
 
 # Speak Function Not Working Properly
-def speak():
-    print('INSIDE SPEAK FNCTION')
+def listen():
+    print('INSIDE listen FNCTION')
     listener = sr.Recognizer()  # to understand what the user is saying.
     try:
         with sr.Microphone() as source:  # laptop's mic is the source for speech.
@@ -51,43 +51,41 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your Email")
-            email_address = '201900294@vupune.ac.in'
+            email_address = listen()
             if email_address != 'N':
                 talk("You meant " + email_address + " say yes to confirm or no to enter again")
-                say = 'yes'
+                say = listen()
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        # email_address = email_address.strip()
-        # email_address = email_address.replace(' ', '')
-        # email_address = email_address.lower()
-        # email_address = convert_special_char(email_address)
+        email_address = email_address.strip()
+        email_address = email_address.replace(' ', '')
+        email_address = email_address.lower()
         print(email_address)
         request.email = email_address
 
         flag = True
         while (flag):
             talk("Enter your password")
-            email_password = 'SRNidis201900294.@2'
+            email_password = listen()
             if email_address != 'N':
                 talk("You meant " + email_password + " say yes to confirm or no to enter again")
-                say = 'yes'
+                say = listen()
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        # email_password = email_password.strip()
-        # email_password = email_password.replace(' ', '')
-        # email_password = email_password.lower()
-        # email_password = convert_special_char(email_password)
+        email_password = email_password.strip()
+        email_password = email_password.replace(' ', '')
+        email_password = email_password.lower()
         print(email_password)
 
         imap_url = 'imap.gmail.com'
         conn = imaplib.IMAP4_SSL(imap_url)
         try:
-            # conn.login(email_address, email_password)
-            # s.login(email_address, email_password)
+            conn.login(email_address, email_password)
+            s.login(email_address, email_password)
             talk("Congratulations. You have logged in successfully. You will now be redirected to the menu page.")
             return JsonResponse({'result' : 'success'})
         except Exception as e:

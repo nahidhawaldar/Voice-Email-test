@@ -9,5 +9,9 @@ from . import views
 # To provide mapping we use urlpatterns list
 urlpatterns = [
     path('', views.login_view, name="login"),
-    re_path(r'^options/$', views.menu_view, name="options")
+    re_path(r'^menu/$', views.menu_view, name="menu"),
+    re_path(r'^compose/$', views.compose_view, name="compose"),
+    re_path(r'^inbox/$', views.inbox_view, name="inbox"),
+    re_path(r'^trash/$', views.trash_view, name="trash")
+
 ]

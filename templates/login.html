@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<script>
+		function SendPostRequestHome(event){
+			$.ajax({
+				url: "{% url 'login' %}",
+				method: 'POST',
+				data: { 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+				success: function (data) {
+					if(data.result == 'success'){
+						window.location = "{% url 'menu' %}";
+					}
+					else if(data.result == 'failure'){
+						window.location = "{% url 'login' %}";
+					}
+				}
+			});
+		}
+	</script>
+
+<body onmousedown = "SendPostRequestHome(event)" >
+	<h1>VOICE BASED EMAIL FOR THE BLIND</h1>
+	<form action="login.html" method="POST">
+		<br><br>
+		<div>
+			<div class="login" id="here">
+				{% csrf_token %}
+				<h3>Email:</h3>
+				<input type="text" placeholder="Email" name="email" required value={{detail.email}} >
+				<br><br>
+				<h3>Password: </h3>
+				<input type="password" placeholder="Password" name="password" required value={{detail.password}} >
+				<br><br><a href="home.html">
+				<input href="home.html" role="button" type="submit" value="LOGIN"></a>
+				<br>
+			</div>
+		</div>
+	</form>
+{% endblock %}

@@ -39,7 +39,7 @@ mail = imaplib.IMAP4_SSL('imap.gmail.com')
 
 #Login Page Code
 def login_view(request):
-    global email_address, email_password
+    global email_address, email_password, server, mail
 
     if request.method == 'POST':
         text1 = "Welcome to our Voice Based Email...... Login with your email account in order to continue. "
@@ -47,41 +47,39 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your Email")
-            email_address = "voicebasedemailtest@gmail.com" #listen() function
+            email_address = listen() #listen() function
             if email_address != 'N':
                 talk("You meant " + email_address + " say yes to confirm or no to enter again")
-                say = "yes" #listen() function
+                say = listen() #listen() function
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        # email_address = email_address.strip()
-        # email_address = email_address.replace(' ', '')
-        # email_address = email_address.lower()
+        email_address = email_address.strip()
+        email_address = email_address.replace(' ', '')
+        email_address = email_address.lower()
         print(email_address)
         request.email = email_address
 
         flag = True
         while (flag):
             talk("Enter your password")
-            email_password = "voicebasedemailtest@123" #Listen() function
+            email_password = listen() #Listen() function
             if email_address != 'N':
                 talk("You meant " + email_password + " say yes to confirm or no to enter again")
-                say = "yes" #listen() function
+                say = listen() #listen() function
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        # email_password = email_password.strip()
-        # email_password = email_password.replace(' ', '')
-        # email_password = email_password.lower()
+        email_password = email_password.strip()
+        email_password = email_password.replace(' ', '')
+        email_password = email_password.lower()
         print(email_password)
 
-        # imap_url = 'imap.gmail.com'
-        # conn = imaplib.IMAP4_SSL(imap_url)
         try:
-            # conn.login(email_address, email_password)
-            # server.login(email_address, email_password)
+            mail.login(email_address, email_password)
+            server.login(email_address, email_password)
             talk("Congratulations. You have logged in successfully. You will now be redirected to the menu page.")
             return JsonResponse({'result' : 'success'})
         except Exception as e:
@@ -103,11 +101,11 @@ def menu_view(request):
         flag = True
         while(flag):
             talk("To compose an email say compose. To open Inbox folder say Inbox. To open Trash folder say Trash. To Logout say Logout. Do you want me to repeat?")
-            say = "No" #listen() function
+            say = listen() #listen() function
             if say == "No" or say == "no":
                 flag = False
             talk("What Do You Want To Do ?")
-            action = "compose" #listen() function
+            action = listen() #listen() function
             action = action.lower()
             if action == 'compose':
                 return JsonResponse({'result' : 'compose'})
@@ -127,7 +125,7 @@ def menu_view(request):
 
 #Compose Page Code
 def compose_view(request):
-    global email_address, email_password, to_addresses, subject, body
+    global email_address, email_password, to_addresses, subject, body, server
     if request.method == "POST":
         text1 = "You have reached the Compose Email Page, where you can Compose and Send an Email"
         talk(text1)
@@ -139,28 +137,27 @@ def compose_view(request):
             while flag:
                 # Get Receiver
                 talk('Hey ' + email_address +' ! To Whom You Want To Send An Email?')
-                to = 'xyz@gmail.com' #listen() function
+                to = listen() #listen() function
                 if to != 'N':
                     print(to)
                     talk("You have said : " + to + ". Are you sure of this recipient ?")
-                    say = "yes" #listen() function
+                    say = listen() #listen() function
                     if say == "Yes" or say =="yes":
                         to_address.append(to)
                         flag = False
                     else:
                         talk("could not understand what you meant")
             talk("Do you want to enter more recipients ?  Say yes or no.")
-            say1 = "no" #listen() function
+            say1 = listen() #listen() function
             if say1 == 'No' or say1 == 'no':
                 flag1 = False
             flag = True
 
         new_to_addresses = list()
         for item in to_address:
-            # item = item.strip()
-            # item = item.replace(' ', '')
-            # item = item.lower()
-            # item = convert_special_char(item)
+            item = item.strip()
+            item = item.replace(' ', '')
+            item = item.lower()
             new_to_addresses.append(item)
             print(item)
 
@@ -168,12 +165,12 @@ def compose_view(request):
         flag = True
         while (flag):
             talk('What Is The Subject Of Your Email ?')
-            subject = "Test Voice-Based Email" #listen() function
+            subject = listen() #listen() function
             if subject == 'N':
                 talk("could not understand what you meant")
             else:
                 talk("You have said : " + subject + " Are you sure of this subject ?")
-                say = "yes" #listen() function
+                say = listen() #listen() function
                 if say == "yes" or say == "Yes":
                     flag = False
 
@@ -181,12 +178,12 @@ def compose_view(request):
         flag = True
         while flag:
             talk("Tell Me The Text")
-            body = "What's up ?" #listen() function
+            body = listen() #listen() function
             if body == "N":
                 talk("Could Not Understand What You Meant")
             else:
                 talk("This is your message." + body + "Are You Sure You Want To Send This?")
-                say = "yes" #listen() function
+                say = listen() #listen() function
                 if say == "Yes" or say == "yes":
                     flag = False
         email = EmailMessage()
@@ -195,7 +192,7 @@ def compose_view(request):
         email['Subject'] = subject
         email.set_content(body)
         try:
-            # server.send_message(email)  # sender  to receiver via server.
+            server.send_message(email)  # sender  to receiver via server.
             talk("Your email has been sent successfully. You will now be redirected to the menu page.")
         except Exception as e:
             print(e)
@@ -249,7 +246,6 @@ def forward_email(item, message):
     global server
     flag1 = True
     flag = True
-    global i
     new_to_address = list()
     while flag:
         while flag1:
@@ -263,7 +259,6 @@ def forward_email(item, message):
                     to = to.strip()
                     to = to.replace(' ', '')
                     to = to.lower()
-                    # to = convert_special_char(to)
                     print(to)
                     new_to_address.append(to)
                     break
@@ -456,7 +451,6 @@ def inbox_view(request):
                 email_id = email_id.strip()
                 email_id = email_id.replace(' ', '')
                 email_id = email_id.lower()
-                # email_id = convert_special_char(email_id)
                 search_specific_mail('INBOX', 'FROM', email_id, 'inbox')
 
             elif action == "go back":
@@ -511,7 +505,6 @@ def trash_view(request):
                 email_id = email_id.strip()
                 email_id = email_id.replace(' ', '')
                 email_id = email_id.lower()
-                # emailid = convert_special_char(emailid)
                 search_specific_mail('"[Gmail]/Trash"', 'FROM', email_id, 'trash')
 
             elif action == 'back':
@@ -520,8 +513,8 @@ def trash_view(request):
                 return JsonResponse({'result': 'success'})
 
             elif action == 'log out':
-                addr = ""
-                passwrd = ""
+                email_address = ""
+                email_password = ""
                 talk("You have been logged out of your account and now will be redirected back to the login page.")
                 return JsonResponse({'result': 'logout'})
 

@@ -1,5 +1,30 @@
-{%extends 'base.html'%}
+{% extends 'base.html' %}
 
-{%block contents%}
-<h1>Trash</h1>
+{% block content %}
+<script>
+	function SendPostRequestTrash(event){
+		$.ajax({
+        url: "{% url 'trash' %}",
+        method: 'POST',
+        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        success: function (data) {
+			if(data.result == 'success'){
+				window.location = "{% url 'menu' %}";
+			}
+			else if(data.result == 'logout'){
+				window.location = "{% url 'login' %}";
+			}
+        }
+    });
+	}
+</script>
+
+<body onmousedown = "SendPostRequestTrash(event)">
+    <h1>Trash</h1>
+    <h2> What would you like to do? <h2><br>
+    <button>Search</button>
+    <button>Go Back</button>
+    <button>Logout</button>
+</body>
+
 {%endblock%}

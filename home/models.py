@@ -11,3 +11,8 @@ from django.db import models
 class Details:
     email : str
     password : str
+
+class Compose:
+    recipient : str
+    subject : str
+    body : str

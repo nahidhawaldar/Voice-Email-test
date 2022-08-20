@@ -31,9 +31,9 @@ subject = ''
 body = ''
 
 #Gmail Server Connection Object
-server = smtplib.SMTP('smtp.gmail.com', 587)
-#Start The Server
-server.starttls()
+# server = smtplib.SMTP('smtp.mail.yahoo.com', 465)
+#Start The Server TLS For Security
+# server.starttls()
 #Mail pointer of gmail to read the emails
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 
@@ -47,39 +47,39 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your Email")
-            email_address = listen() #listen() function
+            email_address = 'voicebasedemailtest@gmail.com' #listen() function
             if email_address != 'N':
                 talk("You meant " + email_address + " say yes to confirm or no to enter again")
-                say = listen() #listen() function
+                say = 'yes' #listen() function
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        email_address = email_address.strip()
-        email_address = email_address.replace(' ', '')
-        email_address = email_address.lower()
+        # email_address = email_address.strip()
+        # email_address = email_address.replace(' ', '')
+        # email_address = email_address.lower()
         print(email_address)
         request.email = email_address
 
         flag = True
         while (flag):
             talk("Enter your password")
-            email_password = listen() #Listen() function
+            email_password = 'plqkmwoqcnfyswgq' #Listen() function
             if email_address != 'N':
                 talk("You meant " + email_password + " say yes to confirm or no to enter again")
-                say = listen() #listen() function
+                say = 'yes' #listen() function
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        email_password = email_password.strip()
-        email_password = email_password.replace(' ', '')
-        email_password = email_password.lower()
+        # email_password = email_password.strip()
+        # email_password = email_password.replace(' ', '')
+        # email_password = email_password.lower()
         print(email_password)
 
         try:
             mail.login(email_address, email_password)
-            server.login(email_address, email_password)
+            # server.login(email_address, email_password)
             talk("Congratulations. You have logged in successfully. You will now be redirected to the menu page.")
             return JsonResponse({'result' : 'success'})
         except Exception as e:
@@ -101,11 +101,11 @@ def menu_view(request):
         flag = True
         while(flag):
             talk("To compose an email say compose. To open Inbox folder say Inbox. To open Trash folder say Trash. To Logout say Logout. Do you want me to repeat?")
-            say = listen() #listen() function
+            say = 'no' #listen() function
             if say == "No" or say == "no":
                 flag = False
             talk("What Do You Want To Do ?")
-            action = listen() #listen() function
+            action = 'inbox' #listen() function
             action = action.lower()
             if action == 'compose':
                 return JsonResponse({'result' : 'compose'})
@@ -299,7 +299,7 @@ def read_mails(mail_list, folder):
         From = message['From']
         Subject = message['Subject']
         Msg_id = message['Message-ID']
-        talk("Email number " + str(mail_count + 1) + "    .The mail is from " + From + " to " + To + "  . The subject of the mail is ")
+        talk("Email number " + str(mail_count + 1) + "    .The mail is from " + From + " to " + To + "  . The subject of the mail is " + Subject)
         print('message id= ', Msg_id)
         print('From :', From)
         print('To :', To)
@@ -399,7 +399,7 @@ def read_mails(mail_list, folder):
             flag = False
 
 #Function To Search Specific Mail from a user
-def search_specific_mail(folder,key,value,foldername):
+def search_specific_mail(folder, key, value, foldername):
     global mail
     mail.select(folder)
     result, data = mail.search(None,key,'"{}"'.format(value))
@@ -409,25 +409,25 @@ def search_specific_mail(folder,key,value,foldername):
     if len(mail_list) == 0:
         talk("There are no emails with this email ID.")
     else:
-        read_mails(mail_list,foldername)
+        read_mails(mail_list, foldername)
 
 #Inbox Page Code
 def inbox_view(request):
     global email_address ,email_password, mail
     if request.method == "POST":
-        mail.login(email_address, email_password)
+        # mail.login(email_address, email_password)
         mail.select('"INBOX"')
         result, data = mail.search(None, '(UNSEEN)')
         unread_list = data[0].split()
         unread_emailnum = len(unread_list)
         result1, data1 = mail.search(None, "ALL")
         total_mail_list = data1[0].split()
-        text = "You have reached your inbox. There are " + str(len(total_mail_list)) + " total mails in your inbox. You have " + str(unread_emailnum) + " unread emails" + ". To read unread emails say unread. To search a specific email say search. To go back to the menu page say back. To logout say logout."
+        text = "You have reached your inbox. There are " + str(len(total_mail_list)) + " total mails in your inbox. You have " + str(unread_emailnum) + " unread emails"
         talk(text)
-        talk("What Would You Like To Do ?. 1. To Read Unread Emails Say Read. 2. To Search Email Say Search")
+        talk("What Would You Like To Do ?. 1. To Read Unread Emails Say Read. 2. To Search Email Say Search. 3. To Go To Menu Page Sat Go Back. 4. To Logout Say Logout.")
         flag = True
         while flag:
-            action = listen()
+            action = "read"
             action = action.lower()
             if action == "read":
                 flag = False

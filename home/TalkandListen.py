@@ -19,5 +19,6 @@ def listen():
             info = listener.recognize_google(voice)  # speech to text function
             print(info, '\n')
             return info
-    except:
+    except Exception as e:
+        print(e)
         pass

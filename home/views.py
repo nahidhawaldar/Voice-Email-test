@@ -31,9 +31,9 @@ subject = ''
 body = ''
 
 #Gmail Server Connection Object
-# server = smtplib.SMTP('smtp.mail.yahoo.com', 465)
+server = smtplib.SMTP('smtp.gmail.com', 587)
 #Start The Server TLS For Security
-# server.starttls()
+server.starttls()
 #Mail pointer of gmail to read the emails
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 
@@ -79,7 +79,7 @@ def login_view(request):
 
         try:
             mail.login(email_address, email_password)
-            # server.login(email_address, email_password)
+            server.login(email_address, email_password)
             talk("Congratulations. You have logged in successfully. You will now be redirected to the menu page.")
             return JsonResponse({'result' : 'success'})
         except Exception as e:
@@ -105,7 +105,7 @@ def menu_view(request):
             if say == "No" or say == "no":
                 flag = False
             talk("What Do You Want To Do ?")
-            action = 'inbox' #listen() function
+            action = 'compose' #listen() function
             action = action.lower()
             if action == 'compose':
                 return JsonResponse({'result' : 'compose'})
@@ -137,18 +137,18 @@ def compose_view(request):
             while flag:
                 # Get Receiver
                 talk('Hey ' + email_address +' ! To Whom You Want To Send An Email?')
-                to = listen() #listen() function
+                to = '201900294@vupune.ac.in' #listen() function
                 if to != 'N':
                     print(to)
                     talk("You have said : " + to + ". Are you sure of this recipient ?")
-                    say = listen() #listen() function
+                    say = 'yes' #listen() function
                     if say == "Yes" or say =="yes":
                         to_address.append(to)
                         flag = False
                     else:
                         talk("could not understand what you meant")
             talk("Do you want to enter more recipients ?  Say yes or no.")
-            say1 = listen() #listen() function
+            say1 = 'no' #listen() function
             if say1 == 'No' or say1 == 'no':
                 flag1 = False
             flag = True
@@ -165,12 +165,12 @@ def compose_view(request):
         flag = True
         while (flag):
             talk('What Is The Subject Of Your Email ?')
-            subject = listen() #listen() function
+            subject = 'Test Email' #listen() function
             if subject == 'N':
                 talk("could not understand what you meant")
             else:
                 talk("You have said : " + subject + " Are you sure of this subject ?")
-                say = listen() #listen() function
+                say = 'yes' #listen() function
                 if say == "yes" or say == "Yes":
                     flag = False
 
@@ -178,12 +178,12 @@ def compose_view(request):
         flag = True
         while flag:
             talk("Tell Me The Text")
-            body = listen() #listen() function
+            body = 'hello, this is a test email' #listen() function
             if body == "N":
                 talk("Could Not Understand What You Meant")
             else:
                 talk("This is your message." + body + "Are You Sure You Want To Send This?")
-                say = listen() #listen() function
+                say = 'yes' #listen() function
                 if say == "Yes" or say == "yes":
                     flag = False
         email = EmailMessage()

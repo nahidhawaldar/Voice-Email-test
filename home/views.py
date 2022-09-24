@@ -47,7 +47,7 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your Email")
-            email_address = 'voicebasedemailtest@gmail.com' #listen() function
+            email_address = listen()
             if email_address != 'N':
                 talk("You meant " + email_address + " say yes to confirm or no to enter again")
                 say = 'yes' #listen() function
@@ -64,7 +64,7 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your password")
-            email_password = 'plqkmwoqcnfyswgq' #Listen() function
+            email_password = listen()
             if email_address != 'N':
                 talk("You meant " + email_password + " say yes to confirm or no to enter again")
                 say = 'yes' #listen() function
@@ -105,7 +105,7 @@ def menu_view(request):
             if say == "No" or say == "no":
                 flag = False
             talk("What Do You Want To Do ?")
-            action = 'compose' #listen() function
+            action = 'trash' #listen() function
             action = action.lower()
             if action == 'compose':
                 return JsonResponse({'result' : 'compose'})
@@ -485,7 +485,6 @@ def trash_view(request):
         mail_list = data1[0].split()
         text = "You have reached your trash folder. You have " + str(len(mail_list)) + " mails in your trash folder. To search a specific email say Search. To go back to the menu page say Go Back. To logout say Logout."
         talk(text)
-        i = i + str(1)
         flag = True
         while (flag):
             action = listen()

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +12,9 @@
       integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
 </head>
-<body bgcolor="cyan">
+<body>
 <center><h1>Welcome To Voice-Email For The Blind</h1></center>
 {% block content %}
 {% endblock %}

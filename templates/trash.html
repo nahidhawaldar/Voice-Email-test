@@ -20,11 +20,21 @@
 </script>
 
 <body onmousedown = "SendPostRequestTrash(event)">
+	<section>
+		<div class="menu-box">
+			<h2>What would you like to do?</h2>
+			<input type="text" name="search" placeholder="Search" /><br>
+			<a href="javascript:history.back()"><span></span><span></span><span></span><span></span>Go Back</a><br>
+			<a href="../"><span></span><span></span><span></span><span></span>Logout</a><br>
+		</div>
+	</section>
+    <!--
     <h1>Trash</h1>
     <h2> What would you like to do? <h2><br>
     <button>Search</button>
     <button>Go Back</button>
     <button>Logout</button>
+    -->
 </body>
 
 {%endblock%}

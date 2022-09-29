@@ -2,38 +2,47 @@
 
 {% block content %}
 <script>
-	function SendPostRequestMenu(event){
+	function SendPostRequestMenu(event) {
 		$.ajax({
-        url: "{% url 'menu' %}",
-        method: 'POST',
-        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-        success: function (data) {
-			if(data.result == 'compose'){
-				window.location = "{% url 'compose' %}";
+			url: "{% url 'menu' %}",
+			method: 'POST',
+			data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+			success: function (data) {
+				if (data.result == 'compose') {
+					window.location = "{% url 'compose' %}";
+				}
+				else if (data.result == 'inbox') {
+					window.location = "{% url 'inbox' %}";
+				}
+				else if (data.result == 'trash') {
+					window.location = "{% url 'trash' %}";
+				}
+				else if (data.result == 'logout') {
+					window.location = "{% url 'login' %}";
+				}
+				else if (data.result == 'failure') {
+					window.location = "{% url 'menu' %}";
+				}
 			}
-			else if(data.result == 'inbox'){
-				window.location = "{% url 'inbox' %}";
-			}
-			else if(data.result == 'trash'){
-				window.location = "{% url 'trash' %}";
-			}
-			else if(data.result == 'logout'){
-				window.location = "{% url 'login' %}";
-			}
-			else if(data.result == 'failure'){
-				window.location = "{% url 'menu' %}";
-			}
-        }
-    });
-}
+		});
+	}
 </script>
 
-<body onmousedown = "SendPostRequestMenu(event)">
-    <h1>Login Successful</h1>
+<body onmousedown="SendPostRequestMenu(event)">
+	<section>
+		<div class="menu-box">
+			<h2>Menu</h2>
+			<a href="../compose"><span></span><span></span><span></span><span></span>Compose</a><br>
+			<a href="../inbox"><span></span><span></span><span></span><span></span>Inbox</a><br>
+			<a href="../trash"><span></span><span></span><span></span><span></span>Trash</a><br>
+			<a href="../"><span></span><span></span><span></span><span></span>Logout</a><br>
+		</div>
+	</section>
+	<!--<h1>Login Successful</h1>
     <button>Compose Email</button><br>
     <button>Inbox</button><br>
     <button>Trash</button><br>
-    <button>logout</button><br>
+    <button>logout</button><br>-->
 </body>
 
 {%endblock%}

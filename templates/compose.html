@@ -2,29 +2,36 @@
 
 {% block content %}
 <script>
-	function WhichButtonCompose(event){
-		$.ajax({
-        url: "{% url 'compose' %}",
-        method: 'POST',
-        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-        success: function (data) {
-			if(data.result == 'success'){
-				window.location = "{% url 'menu' %}";
-			}
-			else if(data.result == 'failure'){
-				window.location = "{% url 'compose' %}";
-			}
-        }
-    });
-	}
+    function WhichButtonCompose(event) {
+        $.ajax({
+            url: "{% url 'compose' %}",
+            method: 'POST',
+            data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+            success: function (data) {
+                if (data.result == 'success') {
+                    window.location = "{% url 'menu' %}";
+                }
+                else if (data.result == 'failure') {
+                    window.location = "{% url 'compose' %}";
+                }
+            }
+        });
+    }
 </script>
 
-<body onmousedown = "WhichButtonCompose(event)">
-    <h1>Compose Email</h1>
-    Recepient Email : <input id="email" type="text" placeholder="Enter Email" required value="{{compose.recipient}}"><br>
-    Subject : <input id="subject" type="text" placeholder=" Enter Subject" required value="{{compose.subject}}"> <br>
-	Body : <input id="body" rows="5" placeholder="Type Message"required value="{{compose.body}}"><br>
-    <button>Send Email</button>
+<body onmousedown="WhichButtonCompose(event)">
+    <section>
+        <div class="menu-box">
+            <h2>Compose Email</h2>
+            <label>Recepient Email :</label><br>
+            <input id="email" type="text" placeholder="Enter Email" required value="{{compose.recipient}}"><br>
+            <label>Subject :</label><br>
+            <input id="subject" type="text" placeholder=" Enter Subject" required value="{{compose.subject}}"> <br>
+            <label>Body :</label><br>
+            <input id="body" rows="5" placeholder="Type Message" required value="{{compose.body}}"><br><br>
+            <button><span></span><span></span><span></span><span></span>Send Email</button>
+        </div>
+    </section>
 </body>
 
 {%endblock%}

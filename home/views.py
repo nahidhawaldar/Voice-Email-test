@@ -105,7 +105,7 @@ def menu_view(request):
             if say == "No" or say == "no":
                 flag = False
             talk("What Do You Want To Do ?")
-            action = 'trash' #listen() function
+            action = 'inbox' #listen() function
             action = action.lower()
             if action == 'compose':
                 return JsonResponse({'result' : 'compose'})
@@ -415,7 +415,7 @@ def search_specific_mail(folder, key, value, foldername):
 def inbox_view(request):
     global email_address ,email_password, mail
     if request.method == "POST":
-        # mail.login(email_address, email_password)
+        mail.login(email_address, email_password)
         mail.select('"INBOX"')
         result, data = mail.search(None, '(UNSEEN)')
         unread_list = data[0].split()

@@ -376,12 +376,12 @@ def get_attachment(msg):
         filename = part.get_filename()
         if bool(filename):
             # attachment_dir = listen()
-            attachment_dir = 'C:/Users/hasna/Desktop'
+            attachment_dir = 'C:/Users/user_name/Desktop'
             filepath = os.path.join(attachment_dir, filename)
             with open(filepath, "wb") as f:
                 f.write(part.get_payload(decode=True))
                 talk("Attachment has been downloaded")
-                path = 'C:/Users/hasna/Desktop/'
+                path = 'C:/Users/user_name/Desktop/'
                 files = os.listdir(path)
                 paths = [os.path.join(path, basename) for basename in files]
                 file_name = max(paths, key=os.path.getctime)

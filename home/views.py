@@ -386,10 +386,6 @@ def get_attachment(msg):
                 paths = [os.path.join(path, basename) for basename in files]
                 file_name = max(paths, key=os.path.getctime)
             with open(file_name, "rb") as f:
-                if file_name.find('.jpg') != -1:
-                    talk("Attachment Is An Image")
-                if file_name.find('.png') != -1:
-                    talk("Attachment Is An Image")
                 if file_name.find('.mp3') != -1:
                     talk("Playing the downloaded audio file.")
                     playsound(file_name)

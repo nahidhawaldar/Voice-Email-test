@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+	function SendPostRequestSent(event){
+		$.ajax({
+        url: "{% url 'sent' %}",
+        method: 'POST',
+        data: { 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        success: function (data) {
+			if(data.result == 'success'){
+				window.location = "{% url 'menu' %}";
+			}
+			else if(data.result == 'logout'){
+				window.location = "{% url 'login' %}";
+			}
+        }
+    });
+	}
+	</script>
+
+<body onmousedown="SendPostRequestSent(event)">
+    <section>
+        <div class="menu-box">
+            <h2>Sent</h2>
+            <h5>What would you like to do?</h5>
+            <input type="text" name="search" placeholder="Search" /><br>
+			<a href="javascript:history.back()"><span></span><span></span><span></span><span></span>Go Back</a><br>
+            <a href="../"><span></span><span></span><span></span><span></span>Logout</a><br>
+        </div>
+    </section>
+    <!--
+    <h1>Inbox</h1>
+    <h2> What would you like to do? <h2><br>
+    <button>Read</button>
+    <button>Search</button>
+    <button>Go Back</button>
+    <button>Logout</button>-->
+</body>
+
+{%endblock%}

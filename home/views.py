@@ -11,12 +11,14 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from email.message import EmailMessage
+from playsound import playsound
 
 # Local Files
 from .models import Details
 from .models import Compose
 from .TalkandListen import talk
 from .TalkandListen import listen
+from .TalkandListen import save_audio
 
 #User Email Address
 email_address = ''
@@ -37,6 +39,38 @@ server.starttls()
 #Mail pointer of gmail to read the emails
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 
+#Convert Special Characters In String
+def convert_special_char(text):
+    temp=text
+    special_chars = ['attherate','dot','underscore','dollar','hash','star','plus','minus','space','dash']
+    for character in special_chars:
+        while(True):
+            pos=temp.find(character)
+            if pos == -1:
+                break
+            else :
+                if character == 'attherate':
+                    temp=temp.replace('attherate','@')
+                elif character == 'dot':
+                    temp=temp.replace('dot','.')
+                elif character == 'underscore':
+                    temp=temp.replace('underscore','_')
+                elif character == 'dollar':
+                    temp=temp.replace('dollar','$')
+                elif character == 'hash':
+                    temp=temp.replace('hash','#')
+                elif character == 'star':
+                    temp=temp.replace('star','*')
+                elif character == 'plus':
+                    temp=temp.replace('plus','+')
+                elif character == 'minus':
+                    temp=temp.replace('minus','-')
+                elif character == 'space':
+                    temp = temp.replace('space', '')
+                elif character == 'dash':
+                    temp=temp.replace('dash','-')
+    return temp
+
 #Login Page Code
 def login_view(request):
     global email_address, email_password, server, mail
@@ -47,34 +81,36 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your Email")
-            email_address = listen()
+            email_address = 'voicebasedemailtest@gmail.com' #listen()
             if email_address != 'N':
                 talk("You meant " + email_address + " say yes to confirm or no to enter again")
-                say = 'yes' #listen() function
+                say = 'yes' #listen()
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        # email_address = email_address.strip()
-        # email_address = email_address.replace(' ', '')
-        # email_address = email_address.lower()
+        email_address = email_address.strip()
+        email_address = email_address.replace(' ', '')
+        email_address = email_address.lower()
+        email_address = convert_special_char(email_address)
         print(email_address)
         request.email = email_address
 
         flag = True
         while (flag):
             talk("Enter your password")
-            email_password = listen()
+            email_password = 'plqkmwoqcnfyswgq' #listen()
             if email_address != 'N':
                 talk("You meant " + email_password + " say yes to confirm or no to enter again")
-                say = 'yes' #listen() function
+                say = 'yes'
                 if say == 'yes' or say == 'Yes':
                     flag = False
             else:
                 talk("could not understand what you meant:")
-        # email_password = email_password.strip()
-        # email_password = email_password.replace(' ', '')
-        # email_password = email_password.lower()
+        email_password = email_password.strip()
+        email_password = email_password.replace(' ', '')
+        email_password = email_password.lower()
+        email_password = convert_special_char(email_password)
         print(email_password)
 
         try:
@@ -100,17 +136,19 @@ def menu_view(request):
         talk(text1)
         flag = True
         while(flag):
-            talk("To compose an email say compose. To open Inbox folder say Inbox. To open Trash folder say Trash. To Logout say Logout. Do you want me to repeat?")
+            talk("To compose an email say compose. To open Inbox folder say Inbox. To open Trash folder say Trash. To open Sent folder say Sent. To Logout say Logout. Do you want me to repeat?")
             say = 'no' #listen() function
             if say == "No" or say == "no":
                 flag = False
             talk("What Do You Want To Do ?")
-            action = 'inbox' #listen() function
+            action = 'sent' #listen() function
             action = action.lower()
             if action == 'compose':
                 return JsonResponse({'result' : 'compose'})
             elif action == 'inbox':
                 return JsonResponse({'result' : 'inbox'})
+            elif action == 'sent':
+                return JsonResponse({'result' : 'sent'})
             elif action == 'trash':
                 return JsonResponse({'result' : 'trash'})
             elif action == 'log out':
@@ -191,6 +229,52 @@ def compose_view(request):
         email['To'] = ",".join(new_to_addresses)
         email['Subject'] = subject
         email.set_content(body)
+
+        # Get Attachment
+        talk('Any Attachment ? Say Yes or No')
+        attach = listen()
+        if attach == 'yes':
+            talk("Do You Want To Record An Audio And Send As An Attachment ?")
+            choice = listen()
+            choice = choice.lower()
+            if choice == 'yes':
+                talk("Enter Filename.")
+                filename = listen()
+                filename = filename.lower()
+                filename = filename + '.mp3'
+                filename = filename.replace(' ', '')
+                print(filename)
+                talk("Enter Your Audio Message.")
+                audio_msg = listen()
+                flagconf = True
+                while flagconf:
+                    try:
+                        save_audio(audio_msg, filename)
+                        flagconf = False
+                    except:
+                        print('Trying Again')
+                attachment = open(filename, "rb")
+                p = MIMEBase('application', 'octet-stream')
+                p.set_payload((attachment).read())
+                encoders.encode_base64(p)
+                p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+                email.attach(p)
+
+            elif choice == 'no':
+                talk("Enter Filename With Extension")
+                filename = listen()
+                filename = filename.strip()
+                filename = filename.replace(' ', '')
+                filename = filename.lower()
+                filename = convert_special_char(filename)
+
+                attachment = open(filename, "rb")
+                p = MIMEBase('application', 'octet-stream')
+                p.set_payload((attachment).read())
+                encoders.encode_base64(p)
+                p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+                email.attach(p)
+
         try:
             server.send_message(email)  # sender  to receiver via server.
             talk("Your email has been sent successfully. You will now be redirected to the menu page.")
@@ -282,6 +366,34 @@ def forward_email(item, message):
             if act != 'yes':
                 flag = False
 
+#Get Attachment From Email
+def get_attachment(msg):
+    for part in msg.walk():
+        if part.get_content_maintype() == 'multipart':
+            continue
+        if part.get('Content-Disposition') is None:
+            continue
+        filename = part.get_filename()
+        if bool(filename):
+            # attachment_dir = listen()
+            attachment_dir = 'C:/Users/hasna/Desktop'
+            filepath = os.path.join(attachment_dir, filename)
+            with open(filepath, "wb") as f:
+                f.write(part.get_payload(decode=True))
+                talk("Attachment has been downloaded")
+                path = 'C:/Users/hasna/Desktop/'
+                files = os.listdir(path)
+                paths = [os.path.join(path, basename) for basename in files]
+                file_name = max(paths, key=os.path.getctime)
+            with open(file_name, "rb") as f:
+                if file_name.find('.jpg') != -1:
+                    talk("Attachment Is An Image")
+                if file_name.find('.png') != -1:
+                    talk("Attachment Is An Image")
+                if file_name.find('.mp3') != -1:
+                    talk("Playing the downloaded audio file.")
+                    playsound(file_name)
+
 #Function To Read All The Mails
 def read_mails(mail_list, folder):
     global server
@@ -346,6 +458,9 @@ def read_mails(mail_list, folder):
         else:
             talk("Body is empty.")
 
+        #Get Attachment If Any
+        get_attachment(message)
+
         if folder == 'inbox':
             talk("Do you want to reply to this mail? Say yes or no. ")
             ans = listen()
@@ -354,7 +469,7 @@ def read_mails(mail_list, folder):
             if ans == "yes":
                 reply_to_email(Msg_id, message)
 
-        if folder == 'inbox':
+        if folder == 'inbox' or folder == 'sent':
             talk("Do you want to forward this mail to anyone? Say yes or no. ")
             ans = listen()
             ans = ans.lower()
@@ -363,7 +478,7 @@ def read_mails(mail_list, folder):
                 forward_email(Msg_id, message)
 
 
-        if folder == 'inbox':
+        if folder == 'inbox' or folder == 'sent':
             talk("Do you want to delete this mail? Say yes or no. ")
             ans = listen()
             ans = ans.lower()
@@ -475,6 +590,65 @@ def inbox_view(request):
         mail.logout()
         return JsonResponse({'result': 'success'})
     return render(request, 'inbox.html')
+
+#Sent Page Code
+def sent_view(request):
+    global email_address, email_password, mail
+    if request.method == 'POST':
+        imap_url = 'imap.gmail.com'
+        mail = imaplib.IMAP4_SSL(imap_url)
+        mail.login(email_address, email_password)
+        mail.select('"[Gmail]/Sent Mail"')
+        result1, data1 = mail.search(None, "ALL")
+        mail_list = data1[0].split()
+        talk("You Have Reached Your Sent Mails Folder. You Have " + str(len(mail_list)) + " Mails In Your Sent Mails Folder. To Search A Specific email Say Search. To Go Back To The Menu Page Say Back. To Logout Say Logout")
+        flag = True
+        while (flag):
+            action = listen()
+            action = action.lower()
+            if action == 'search':
+                flag = False
+                emailid = ""
+                while True:
+                    talk("Enter Email ID Of Receiver.")
+                    emailid = listen()
+                    talk("You Meant " + emailid + " Say Yes To Confirm Or No To Enter Again")
+                    choice = listen()
+                    choice = choice.lower()
+                    if choice == 'yes':
+                        break
+                emailid = emailid.strip()
+                emailid = emailid.replace(' ', '')
+                emailid = emailid.lower()
+                emailid = convert_special_char(emailid)
+                search_specific_mail('"[Gmail]/Sent Mail"', 'TO', emailid,'sent')
+
+            elif action == 'back':
+                talk("You Will Now Be Redirected To The Menu Page.")
+                mail.logout()
+                return JsonResponse({'result': 'success'})
+
+            elif action == 'logout':
+                email_address = ""
+                email_password = ""
+                talk("You Have Been Logged Out Of Your Account And Now Will Be Redirected Back To The Login Page.")
+                return JsonResponse({'result': 'logout'})
+
+            else:
+                talk("Invalid Action. Please Try Again.")
+
+            talk("If You Wish To Do Anything Else In The Sent Mails Folder. Say Yes Or Else Say No to Logout.")
+            ans = listen()
+            ans = ans.lower()
+            if ans == 'yes':
+                flag = True
+                talk("Enter Your Desired Action. Say Search, Back Or Logout.")
+        talk("You Will Now Be Redirected To The Menu Page.")
+        mail.logout()
+        return JsonResponse({'result': 'success'})
+
+    elif request.method == 'GET':
+        return render(request, 'sent.html')
 
 #Trash Page Code
 def trash_view(request):

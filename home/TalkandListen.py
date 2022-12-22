@@ -13,6 +13,7 @@ def listen():
     listener = sr.Recognizer()  # to understand what the user is saying.
     try:
         with sr.Microphone() as source:  # laptop's mic is the source for speech.
+            listener.adjust_for_ambient_noise(source, duration=1)
             print('Listening...')
             talk('Now Listening...')
             voice = listener.listen(source)
@@ -22,3 +23,8 @@ def listen():
     except Exception as e:
         print(e)
         pass
+
+def save_audio(audio_msg, filename):
+    tts = gTTS(text = audio_msg, lang='en', slow=False)
+    tts.save(filename)
+    return False

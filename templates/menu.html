@@ -14,6 +14,9 @@
 				else if (data.result == 'inbox') {
 					window.location = "{% url 'inbox' %}";
 				}
+				else if (data.result == 'sent') {
+					window.location = "{% url 'sent' %}";
+				}
 				else if (data.result == 'trash') {
 					window.location = "{% url 'trash' %}";
 				}
@@ -34,6 +37,7 @@
 			<h2>Menu</h2>
 			<a href="../compose"><span></span><span></span><span></span><span></span>Compose</a><br>
 			<a href="../inbox"><span></span><span></span><span></span><span></span>Inbox</a><br>
+			<a href="../sent"><span></span><span></span><span></span><span></span>Sent</a><br>
 			<a href="../trash"><span></span><span></span><span></span><span></span>Trash</a><br>
 			<a href="../"><span></span><span></span><span></span><span></span>Logout</a><br>
 		</div>

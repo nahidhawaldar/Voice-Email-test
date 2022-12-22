@@ -81,7 +81,7 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your Email")
-            email_address = 'voicebasedemailtest@gmail.com' #listen()
+            email_address = listen()
             if email_address != 'N':
                 talk("You meant " + email_address + " say yes to confirm or no to enter again")
                 say = 'yes' #listen()
@@ -99,7 +99,7 @@ def login_view(request):
         flag = True
         while (flag):
             talk("Enter your password")
-            email_password = 'plqkmwoqcnfyswgq' #listen()
+            email_password = listen()
             if email_address != 'N':
                 talk("You meant " + email_password + " say yes to confirm or no to enter again")
                 say = 'yes'
